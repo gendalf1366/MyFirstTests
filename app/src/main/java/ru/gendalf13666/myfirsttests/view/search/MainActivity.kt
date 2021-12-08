@@ -1,4 +1,4 @@
-package ru.gendalf13666.myfirsttests.view
+package ru.gendalf13666.myfirsttests.view.search
 
 import android.os.Bundle
 import android.view.View
@@ -12,25 +12,35 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.databinding.ActivityMainBinding
 import ru.gendalf13666.myfirsttests.model.SearchResult
-import ru.gendalf13666.myfirsttests.presenter.PresenterContract
-import ru.gendalf13666.myfirsttests.presenter.SearchPresenter
+import ru.gendalf13666.myfirsttests.presenter.search.PresenterSearchContract
+import ru.gendalf13666.myfirsttests.presenter.search.SearchPresenter
 import ru.gendalf13666.myfirsttests.repository.GitHubApi
 import ru.gendalf13666.myfirsttests.repository.GitHubRepository
-import java.util.*
+import ru.gendalf13666.myfirsttests.view.details.DetailsActivity
 
-class MainActivity : AppCompatActivity(), ViewContract {
+class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     private val adapter = SearchResultAdapter()
-    private val presenter: PresenterContract = SearchPresenter(this, createRepository())
+    private val presenter: PresenterSearchContract = SearchPresenter(this, createRepository())
+    private var totalCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUI()
+        presenter.onAttach()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDetach()
     }
 
     private fun setUI() {
+        toDetailsActivityButton.setOnClickListener {
+            startActivity(DetailsActivity.getIntent(this, totalCount))
+        }
         setQueryListener()
         setRecyclerView()
     }
@@ -77,9 +87,8 @@ class MainActivity : AppCompatActivity(), ViewContract {
         searchResults: List<SearchResult>,
         totalCount: Int
     ) {
+        this.totalCount = totalCount
         adapter.updateResults(searchResults)
-        resultsCountTextView.text =
-            String.format(Locale.getDefault(), getString(R.string.results_count), totalCount)
     }
 
     override fun displayError() {

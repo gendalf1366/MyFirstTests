@@ -1,17 +1,17 @@
 package ru.gendalf13666.myfirsttests
 
-import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import ru.gendalf13666.myfirsttests.model.SearchResponse
 import ru.gendalf13666.myfirsttests.model.SearchResult
-import ru.gendalf13666.myfirsttests.presenter.SearchPresenter
+import ru.gendalf13666.myfirsttests.presenter.search.SearchPresenter
 import ru.gendalf13666.myfirsttests.repository.GitHubRepository
-import ru.gendalf13666.myfirsttests.view.ViewContract
+import ru.gendalf13666.myfirsttests.view.search.ViewSearchContract
 
 class SearchPresenterTest {
 
@@ -21,7 +21,7 @@ class SearchPresenterTest {
     private lateinit var repository: GitHubRepository
 
     @Mock
-    private lateinit var viewContract: ViewContract
+    private lateinit var viewContract: ViewSearchContract
 
     @Before
     fun setUp() {
@@ -33,88 +33,91 @@ class SearchPresenterTest {
     fun searchGitHub_Test() {
         val searchQuery = "some query"
         presenter.searchGitHub("some query")
-        Mockito.verify(repository, Mockito.times(1)).searchGithub(searchQuery, presenter)
+        verify(repository, times(1)).searchGithub(searchQuery, presenter)
     }
 
     @Test
     fun handleGitHubError_Test() {
         presenter.handleGitHubError()
-        Mockito.verify(viewContract, Mockito.times(1)).displayError()
+        verify(viewContract, times(1)).displayError()
     }
 
     @Test
     fun handleGitHubResponse_ResponseUnsuccessful() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.isSuccessful).thenReturn(false)
-        Assert.assertFalse(response.isSuccessful)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.isSuccessful).thenReturn(false)
+        assertFalse(response.isSuccessful)
     }
 
     @Test
     fun handleGitHubResponse_Failure() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.isSuccessful).thenReturn(false)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.isSuccessful).thenReturn(false)
 
         presenter.handleGitHubResponse(response)
 
-        Mockito.verify(viewContract, Mockito.times(1))
+        verify(viewContract, times(1))
             .displayError("Response is null or unsuccessful")
     }
 
     @Test
     fun handleGitHubResponse_ResponseFailure_ViewContractMethodOrder() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.isSuccessful).thenReturn(false)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.isSuccessful).thenReturn(false)
         presenter.handleGitHubResponse(response)
 
-        val inOrder = Mockito.inOrder(viewContract)
+        val inOrder = inOrder(viewContract)
         inOrder.verify(viewContract).displayLoading(false)
         inOrder.verify(viewContract).displayError("Response is null or unsuccessful")
     }
 
     @Test
     fun handleGitHubResponse_ResponseIsEmpty() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.body()).thenReturn(null)
-
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.body()).thenReturn(null)
         presenter.handleGitHubResponse(response)
-
-        Assert.assertNull(response.body())
+        assertNull(response.body())
     }
 
     @Test
     fun handleGitHubResponse_ResponseIsNotEmpty() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.body()).thenReturn(Mockito.mock(SearchResponse::class.java))
-
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.body()).thenReturn(mock(SearchResponse::class.java))
         presenter.handleGitHubResponse(response)
-
-        Assert.assertNotNull(response.body())
+        assertNotNull(response.body())
     }
 
     @Test
     fun handleGitHubResponse_EmptyResponse() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        Mockito.`when`(response.isSuccessful).thenReturn(true)
-        Mockito.`when`(response.body()).thenReturn(null)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        `when`(response.isSuccessful).thenReturn(true)
+        `when`(response.body()).thenReturn(null)
+
         presenter.handleGitHubResponse(response)
 
-        Mockito.verify(viewContract, Mockito.times(1))
+        verify(viewContract, times(1))
             .displayError("Search results or total count are null")
     }
 
     @Test
     fun handleGitHubResponse_Success() {
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        val searchResponse = Mockito.mock(SearchResponse::class.java)
-        val searchResults = listOf(Mockito.mock(SearchResult::class.java))
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        val searchResponse = mock(SearchResponse::class.java)
+        val searchResults = listOf(mock(SearchResult::class.java))
 
-        Mockito.`when`(response.isSuccessful).thenReturn(true)
-        Mockito.`when`(response.body()).thenReturn(searchResponse)
-        Mockito.`when`(searchResponse.searchResults).thenReturn(searchResults)
-        Mockito.`when`(searchResponse.totalCount).thenReturn(101)
+        `when`(response.isSuccessful).thenReturn(true)
+        `when`(response.body()).thenReturn(searchResponse)
+        `when`(searchResponse.searchResults).thenReturn(searchResults)
+        `when`(searchResponse.totalCount).thenReturn(101)
 
         presenter.handleGitHubResponse(response)
 
-        Mockito.verify(viewContract, Mockito.times(1)).displaySearchResults(searchResults, 101)
+        verify(viewContract, times(1)).displaySearchResults(searchResults, 101)
+    }
+
+    @Test
+    fun onDetach() {
+        presenter.onDetach()
+        assertNull(presenter.viewContract)
     }
 }
