@@ -1,4 +1,4 @@
-package ru.gendalf13666.myfirsttests.view
+package ru.gendalf13666.myfirsttests.view.search
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item.view.*
 import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.model.SearchResult
-import ru.gendalf13666.myfirsttests.view.SearchResultAdapter.SearchResultViewHolder
+import ru.gendalf13666.myfirsttests.view.search.SearchResultAdapter.SearchResultViewHolder
 
 internal class SearchResultAdapter : RecyclerView.Adapter<SearchResultViewHolder>() {
 

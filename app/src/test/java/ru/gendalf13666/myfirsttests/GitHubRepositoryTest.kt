@@ -5,7 +5,7 @@ import okio.Timeout
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,22 +30,21 @@ class GitHubRepositoryTest {
     @Test
     fun searchGithub_Test() {
         val searchQuery = "some query"
-        val call = Mockito.mock(Call::class.java) as Call<SearchResponse?>
+        val call = mock(Call::class.java) as Call<SearchResponse?>
 
-        Mockito.`when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
+        `when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
         repository.searchGithub(
             searchQuery,
-            Mockito.mock(GitHubRepository.GitHubRepositoryCallback::class.java)
+            mock(GitHubRepository.GitHubRepositoryCallback::class.java)
         )
-        Mockito.verify(gitHubApi, Mockito.times(1)).searchGithub(searchQuery)
+        verify(gitHubApi, times(1)).searchGithub(searchQuery)
     }
 
     @Test
     fun searchGithub_TestCallback() {
         val searchQuery = "some query"
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
-        val gitHubRepositoryCallBack =
-            Mockito.mock(GitHubRepository.GitHubRepositoryCallback::class.java)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
+        val gitHubRepositoryCallBack = mock(GitHubRepository.GitHubRepositoryCallback::class.java)
 
         val call = object : Call<SearchResponse?> {
             override fun enqueue(callback: Callback<SearchResponse?>) {
@@ -81,32 +80,29 @@ class GitHubRepositoryTest {
             }
         }
 
-        Mockito.`when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
+        `when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
         repository.searchGithub(searchQuery, gitHubRepositoryCallBack)
 
-        Mockito.verify(gitHubRepositoryCallBack, Mockito.times(1)).handleGitHubResponse(response)
-        Mockito.verify(gitHubRepositoryCallBack, Mockito.times(1)).handleGitHubError()
+        verify(gitHubRepositoryCallBack, times(1)).handleGitHubResponse(response)
+        verify(gitHubRepositoryCallBack, times(1)).handleGitHubError()
     }
 
     @Test
     fun searchGithub_TestCallback_WithMock() {
         val searchQuery = "some query"
-        val call = Mockito.mock(Call::class.java) as Call<SearchResponse?>
-        val callBack = Mockito.mock(Callback::class.java) as Callback<SearchResponse?>
-        val gitHubRepositoryCallBack =
-            Mockito.mock(GitHubRepository.GitHubRepositoryCallback::class.java)
-        val response = Mockito.mock(Response::class.java) as Response<SearchResponse?>
+        val call = mock(Call::class.java) as Call<SearchResponse?>
+        val callBack = mock(Callback::class.java) as Callback<SearchResponse?>
+        val gitHubRepositoryCallBack = mock(GitHubRepository.GitHubRepositoryCallback::class.java)
+        val response = mock(Response::class.java) as Response<SearchResponse?>
 
-        Mockito.`when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
-        Mockito.`when`(call.enqueue(callBack)).then {
-            callBack.onResponse(Mockito.any(), Mockito.any())
+        `when`(gitHubApi.searchGithub(searchQuery)).thenReturn(call)
+        `when`(call.enqueue(callBack)).then {
+            callBack.onResponse(any(), any())
         }
-        Mockito.`when`(callBack.onResponse(Mockito.any(), Mockito.any())).then {
+        `when`(callBack.onResponse(any(), any())).then {
             gitHubRepositoryCallBack.handleGitHubResponse(response)
         }
 
         repository.searchGithub(searchQuery, gitHubRepositoryCallBack)
-
-        Mockito.verify(gitHubRepositoryCallBack, Mockito.times(1)).handleGitHubResponse(response)
     }
 }
