@@ -6,17 +6,22 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.gendalf13666.myfirsttests.BuildConfig
 import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.databinding.ActivityMainBinding
 import ru.gendalf13666.myfirsttests.model.SearchResult
+import ru.gendalf13666.myfirsttests.presenter.RepositoryContract
 import ru.gendalf13666.myfirsttests.presenter.search.PresenterSearchContract
 import ru.gendalf13666.myfirsttests.presenter.search.SearchPresenter
+import ru.gendalf13666.myfirsttests.repository.FakeGitHubRepository
 import ru.gendalf13666.myfirsttests.repository.GitHubApi
 import ru.gendalf13666.myfirsttests.repository.GitHubRepository
 import ru.gendalf13666.myfirsttests.view.details.DetailsActivity
+import java.util.*
 
 class MainActivity : AppCompatActivity(), ViewSearchContract {
 
@@ -29,12 +34,6 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUI()
-        presenter.onAttach()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.onDetach()
     }
 
     private fun setUI() {
@@ -72,8 +71,12 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         )
     }
 
-    private fun createRepository(): GitHubRepository {
-        return GitHubRepository(createRetrofit().create(GitHubApi::class.java))
+    private fun createRepository(): RepositoryContract {
+        return if (BuildConfig.TYPE == FAKE) {
+            FakeGitHubRepository()
+        } else {
+            GitHubRepository(createRetrofit().create(GitHubApi::class.java))
+        }
     }
 
     private fun createRetrofit(): Retrofit {
@@ -87,6 +90,12 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         searchResults: List<SearchResult>,
         totalCount: Int
     ) {
+        with(totalCountTextView) {
+            visibility = View.VISIBLE
+            text =
+                String.format(Locale.getDefault(), getString(R.string.results_count), totalCount)
+        }
+
         this.totalCount = totalCount
         adapter.updateResults(searchResults)
     }
@@ -109,5 +118,6 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     companion object {
         const val BASE_URL = "https://api.github.com"
+        const val FAKE = "FAKE"
     }
 }
