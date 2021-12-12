@@ -1,9 +1,9 @@
 package ru.gendalf13666.myfirsttests.presenter.details
 
-import ru.gendalf13666.myfirsttests.view.details.DetailsActivity
+import ru.gendalf13666.myfirsttests.view.details.ViewDetailsContract
 
 internal class DetailsPresenter internal constructor(
-    private var viewContract: DetailsActivity?,
+    private val viewContract: ViewDetailsContract,
     private var count: Int = 0
 ) : PresenterDetailsContract {
 
@@ -13,18 +13,11 @@ internal class DetailsPresenter internal constructor(
 
     override fun onIncrement() {
         count++
-        viewContract?.setCount(count)
+        viewContract.setCount(count)
     }
 
     override fun onDecrement() {
         count--
-        viewContract?.setCount(count)
-    }
-
-    override fun onAttach() {
-    }
-
-    override fun onDetach() {
-        viewContract = null
+        viewContract.setCount(count)
     }
 }
