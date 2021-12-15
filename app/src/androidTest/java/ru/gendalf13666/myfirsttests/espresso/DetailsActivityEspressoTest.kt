@@ -1,4 +1,4 @@
-package ru.gendalf13666.myfirsttests
+package ru.gendalf13666.myfirsttests.espresso
 
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
@@ -13,6 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.view.details.DetailsActivity
 
 @RunWith(AndroidJUnit4::class)

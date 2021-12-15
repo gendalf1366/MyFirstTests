@@ -2,17 +2,13 @@ package ru.gendalf13666.myfirsttests.view.search
 
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.gendalf13666.myfirsttests.BuildConfig
 import ru.gendalf13666.myfirsttests.R
-import ru.gendalf13666.myfirsttests.databinding.ActivityMainBinding
 import ru.gendalf13666.myfirsttests.model.SearchResult
 import ru.gendalf13666.myfirsttests.presenter.RepositoryContract
 import ru.gendalf13666.myfirsttests.presenter.search.PresenterSearchContract
@@ -31,8 +27,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
         setUI()
     }
 
@@ -40,35 +35,26 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         toDetailsActivityButton.setOnClickListener {
             startActivity(DetailsActivity.getIntent(this, totalCount))
         }
-        setQueryListener()
+
+        searchButton.setOnClickListener {
+            val query = searchEditText.text.toString()
+            if (query.isNotBlank()) {
+                    presenter.searchGitHub(query)
+                } else {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.enter_search_word),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+
         setRecyclerView()
     }
 
     private fun setRecyclerView() {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
-    }
-
-    private fun setQueryListener() {
-        searchEditText.setOnEditorActionListener(
-            OnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    val query = searchEditText.text.toString()
-                    if (query.isNotBlank()) {
-                        presenter.searchGitHub(query)
-                        return@OnEditorActionListener true
-                    } else {
-                        Toast.makeText(
-                            this@MainActivity,
-                            getString(R.string.enter_search_word),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@OnEditorActionListener false
-                    }
-                }
-                false
-            }
-        )
     }
 
     private fun createRepository(): RepositoryContract {

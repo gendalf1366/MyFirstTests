@@ -35,6 +35,7 @@ internal class SearchResultAdapter : RecyclerView.Adapter<SearchResultViewHolder
         return results.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateResults(results: List<SearchResult>) {
         this.results = results
         notifyDataSetChanged()

@@ -1,4 +1,4 @@
-package ru.gendalf13666.myfirsttests
+package ru.gendalf13666.myfirsttests.espresso
 
 import android.view.View
 import androidx.test.core.app.ActivityScenario
@@ -14,6 +14,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import ru.gendalf13666.myfirsttests.BuildConfig
+import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.view.search.MainActivity
 
 @RunWith(AndroidJUnit4::class)
