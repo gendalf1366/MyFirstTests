@@ -51,6 +51,15 @@ android {
         }
     }
 
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/sharedData/java"
+        }
+        test {
+            java.srcDirs += "src/sharedData/java"
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -63,6 +72,7 @@ dependencies {
 
     //UI Automator
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha03'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
