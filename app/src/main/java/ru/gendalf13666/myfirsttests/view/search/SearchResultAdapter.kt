@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import ru.gendalf13666.myfirsttests.view.search.SearchResultAdapter.SearchResultViewHolder
 import kotlinx.android.synthetic.main.list_item.view.*
 import ru.gendalf13666.myfirsttests.R
 import ru.gendalf13666.myfirsttests.model.SearchResult
-import ru.gendalf13666.myfirsttests.view.search.SearchResultAdapter.SearchResultViewHolder
 
 internal class SearchResultAdapter : RecyclerView.Adapter<SearchResultViewHolder>() {
 
@@ -45,6 +46,9 @@ internal class SearchResultAdapter : RecyclerView.Adapter<SearchResultViewHolder
 
         fun bind(searchResult: SearchResult) {
             itemView.repositoryName.text = searchResult.fullName
+            itemView.repositoryName.setOnClickListener {
+                Toast.makeText(itemView.context, searchResult.fullName, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
