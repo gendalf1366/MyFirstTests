@@ -47,7 +47,7 @@ class RecordEspressoTest {
 
         val materialButton = onView(
             allOf(
-                withId(R.id.searchButton), withText("find"),
+                withId(R.id.searchEditText), withText("find"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -82,7 +82,7 @@ class RecordEspressoTest {
 
         val button2 = onView(
             allOf(
-                withId(R.id.searchButton), withText("FIND"),
+                withId(R.id.searchEditText), withText("FIND"),
                 withParent(withParent(withId(android.R.id.content))),
                 isDisplayed()
             )

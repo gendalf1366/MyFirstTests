@@ -34,6 +34,7 @@ object TestConstants {
     const val SWIPE_STEPS = 5
     const val SETTING_PACKAGE = "com.android.settings"
     const val EXACT_DEPT = 0
+    const val TEST_NUMBER_OF_RESULTS_PLUS_1 = "Number of results: 1"
 
     fun delay(): ViewAction {
         return object : ViewAction {

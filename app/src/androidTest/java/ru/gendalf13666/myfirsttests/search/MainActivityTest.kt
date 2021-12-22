@@ -1,9 +1,9 @@
-package ru.gendalf13666.myfirsttests.espresso
+package ru.gendalf13666.myfirsttests.search
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
@@ -17,52 +17,19 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import ru.gendalf13666.myfirsttests.R
-import ru.gendalf13666.myfirsttests.TestConstants
 import ru.gendalf13666.myfirsttests.view.search.MainActivity
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class RecordEspressoTestTwo {
+class MainActivityTest {
 
     @Rule
     @JvmField
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    fun recordEspressoTestTwo() {
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.searchEditText),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText.perform(replaceText("AppDelivery"), closeSoftKeyboard())
-
+    fun mainActivityTest() {
         val materialButton = onView(
-            allOf(
-                withId(R.id.searchEditText), withText("find"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
-        materialButton.perform(click())
-
-        onView(isRoot()).perform((TestConstants.delay()))
-
-        val materialButton2 = onView(
             allOf(
                 withId(R.id.toDetailsActivityButton), withText("to details"),
                 childAtPosition(
@@ -75,36 +42,40 @@ class RecordEspressoTestTwo {
                 isDisplayed()
             )
         )
-        materialButton2.perform(click())
+        materialButton.perform(click())
 
-        onView(isRoot()).perform((TestConstants.delay()))
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.incrementButton), withText("+"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
 
         val textView = onView(
             allOf(
-                withId(R.id.totalCountTextView), withText("Number of results: 73"),
+                withId(R.id.totalCountTextView), withText("Number of results: 1"),
                 withParent(withParent(withId(android.R.id.content))),
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("Number of results: 73")))
+        textView.check(matches(withText("Number of results: 1")))
 
         val button = onView(
-            allOf(
-                withId(R.id.decrementButton), withText("-"),
-                withParent(withParent(withId(android.R.id.content))),
-                isDisplayed()
-            )
-        )
-        button.check(matches(isDisplayed()))
-
-        val button2 = onView(
             allOf(
                 withId(R.id.incrementButton), withText("+"),
                 withParent(withParent(withId(android.R.id.content))),
                 isDisplayed()
             )
         )
-        button2.check(matches(isDisplayed()))
+        button.check(matches(isDisplayed()))
     }
 
     private fun childAtPosition(
