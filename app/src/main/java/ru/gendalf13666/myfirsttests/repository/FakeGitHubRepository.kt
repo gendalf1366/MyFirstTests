@@ -1,5 +1,6 @@
 package ru.gendalf13666.myfirsttests.repository
 
+import io.reactivex.Observable
 import retrofit2.Response
 import ru.gendalf13666.myfirsttests.model.SearchResponse
 import ru.gendalf13666.myfirsttests.model.SearchResult
@@ -12,10 +13,14 @@ internal class FakeGitHubRepository : RepositoryContract {
         query: String,
         callback: RepositoryCallback
     ) {
-        callback.handleGitHubResponse(Response.success(getFakeResponse()))
+        callback.handleGitHubResponse(Response.success(generateSearchResponse()))
     }
 
-    private fun getFakeResponse(): SearchResponse {
+    override fun searchGithub(query: String): Observable<SearchResponse> {
+        return Observable.just(generateSearchResponse())
+    }
+
+    private fun generateSearchResponse(): SearchResponse {
         val list: MutableList<SearchResult> = mutableListOf()
         for (index in 1..100) {
             list.add(
